@@ -156,12 +156,12 @@ h2 {
 @media only screen and (min-width: 35em) {
 
 
-@media print,
-(-webkit-min-device-pixel-ratio: 1.25),
-(min-resolution: 1.25dppx),
-(min-resolution: 120dpi) {
+    @media print,
+    (-webkit-min-device-pixel-ratio: 1.25),
+    (min-resolution: 1.25dppx),
+    (min-resolution: 120dpi) {
 
-}
+    }
 
 
     *,
@@ -220,4 +220,3 @@ h2 {
         page-break-after: avoid;
     }
 }
-
