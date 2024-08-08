@@ -1,28 +1,10 @@
-/*! HTML5 Boilerplate v9.0.1 | MIT License | https://html5boilerplate.com/ */
-
-/* main.css 3.0.0 | MIT License | https://github.com/h5bp/main.css#readme */
-/*
- * What follows is the result of much research on cross-browser styling.
- * Credit left inline and big thanks to Nicolas Gallagher, Jonathan Neal,
- * Kroc Camen, and the H5BP dev community and team.
- */
-
-/* ==========================================================================
-   Base styles: opinionated defaults
-   ========================================================================== */
-
 html {
     color: #222;
     font-size: 1em;
     line-height: 1.4;
 }
 
-/*
- * Remove text-shadow in selection highlight:
- * https://twitter.com/miketaylr/status/12228805301
- *
- * Customize the background color to match your design.
- */
+
 
 ::-moz-selection {
     background: #b3d4fc;
@@ -34,9 +16,7 @@ html {
     text-shadow: none;
 }
 
-/*
- * A better looking default horizontal rule
- */
+
 
 hr {
     display: block;
@@ -47,11 +27,7 @@ hr {
     padding: 0;
 }
 
-/*
- * Remove the gap between audio, canvas, iframes,
- * images, videos and the bottom of their containers:
- * https://github.com/h5bp/html5-boilerplate/issues/440
- */
+
 
 audio,
 canvas,
@@ -62,9 +38,7 @@ video {
     vertical-align: middle;
 }
 
-/*
- * Remove default fieldset styles.
- */
+
 
 fieldset {
     border: 0;
@@ -72,17 +46,13 @@ fieldset {
     padding: 0;
 }
 
-/*
- * Allow only vertical resizing of textareas.
- */
+
 
 textarea {
     resize: vertical;
 }
 
-/* ==========================================================================
-   Author's custom styles
-   ========================================================================== *//* styles.css */
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -119,16 +89,7 @@ button {
     display: block;
     margin: auto;
 }
-button1 {
-    padding: 0.5rem 1rem;
-    font-size: 2rem;
-    background-color: #000000;
-    color: #ffde00;
-    border: #ffdd00;
-    border-radius: 180px;
-    cursor: pointer;
 
-}
 
 button:hover {
     background-color: rgba(0, 0, 0, 0.45);
@@ -140,27 +101,13 @@ h2 {
     border-color: black;
 }
 
-/* ==========================================================================
-   Helper classes
-   ========================================================================== */
 
-/*
- * Hide visually and from screen readers
- */
 
 .hidden,
 [hidden] {
     display: none !important;
 }
 
-/*
- * Hide only visually, but have it available for screen readers:
- * https://snook.ca/archives/html_and_css/hiding-content-for-accessibility
- *
- * 1. For long content, line feeds are not interpreted as spaces and small width
- *    causes content to wrap 1 word per line:
- *    https://medium.com/@jessebeach/beware-smushed-off-screen-accessible-text-5952a4c2cbfe
- */
 
 .visually-hidden {
     border: 0;
@@ -175,11 +122,7 @@ h2 {
     /* 1 */
 }
 
-/*
- * Extends the .visually-hidden class to allow the element
- * to be focusable when navigated to via the keyboard:
- * https://www.drupal.org/node/897638
- */
+
 
 .visually-hidden.focusable:active,
 .visually-hidden.focusable:focus {
@@ -192,20 +135,11 @@ h2 {
     width: auto;
 }
 
-/*
- * Hide visually and from screen readers, but maintain layout
- */
 
 .invisible {
     visibility: hidden;
 }
 
-/*
- * Clearfix: contain floats
- *
- * The use of `table` rather than `block` is only necessary if using
- * `::before` to contain the top-margins of child elements.
- */
 
 .clearfix::before,
 .clearfix::after {
@@ -217,30 +151,19 @@ h2 {
     clear: both;
 }
 
-/* ==========================================================================
-   EXAMPLE Media Queries for Responsive Design.
-   These examples override the primary ('mobile first') styles.
-   Modify as content requires.
-   ========================================================================== */
+
 
 @media only screen and (min-width: 35em) {
-    /* Style adjustments for viewports that meet the condition */
-}
+
 
 @media print,
 (-webkit-min-device-pixel-ratio: 1.25),
 (min-resolution: 1.25dppx),
 (min-resolution: 120dpi) {
-    /* Style adjustments for high resolution devices */
+
 }
 
-/* ==========================================================================
-   Print styles.
-   Inlined to avoid the additional HTTP request:
-   https://www.phpied.com/delay-loading-your-print-css/
-   ========================================================================== */
 
-@media print {
     *,
     *::before,
     *::after {
@@ -264,10 +187,7 @@ h2 {
         content: " (" attr(title) ")";
     }
 
-    /*
-     * Don't show links that are fragment identifiers,
-     * or use the `javascript:` pseudo protocol
-     */
+
     a[href^="#"]::after,
     a[href^="javascript:"]::after {
         content: "";
