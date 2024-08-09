@@ -4,50 +4,348 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
     <title>Expense Tracker App</title>
-    <h3>watermelon tracker</h3>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .login-container, .signup-container, .expense-tracker-container {
+            display: none;
+        }
+        .login-container.show, .signup-container.show, .expense-tracker-container.show {
+            display: block;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #444;
+        }
+        .login-container h2, .signup-container h2 {
+            color: #28a745;
+        }
+        .switch-links {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .switch-links a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .switch-links a:hover {
+            text-decoration: underline;
+        }
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #e9ecef;
+            margin-bottom: 20px;
+        }
+        .input-section label {
+            font-weight: bold;
+            color: #495057;
+        }
+        .input-section select, .input-section input {
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        .input-section select {
+            background-color: #ffffff;
+        }
+        .input-section input[type="number"], .input-section input[type="date"] {
+            background-color: #ffffff;
+        }
+        .input-section button {
+            padding: 10px;
+            background-color: #28a745;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .input-section button:hover {
+            background-color: #218838;
+        }
+        .expenses-list {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #28a745;
+            color: #ffffff;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tfoot td {
+            font-weight: bold;
+            background-color: #e9ecef;
+        }
+        .delete-btn {
+            padding: 5px 10px;
+            background-color: #dc3545;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
 </head>
 <body>
-<h1>Expense Tracker App</h1>
-<div class="input-section">
-    <label for="category-select">Category:</label>
-    <select id="category-select">
-        <option value="Food & Beverage">Food & Beverage</option>
-        <option value="Rent">Rent</option>
-        <option value="Transport">Transport</option>
-        <option value="Relaxing">Relaxing</option>
-    </select>
-    <label for="amount-input">Amount:</label>
-    <input type="number" id="amount-input">
-    <label for="date-input">Date:</label>
-    <input type="date" id="date-input">
-    <button id="add-btn">Add</button>
-</div>
-<div class="expenses-list">
-    <h2>Expenses List</h2>
-    <table>
-        <thead>
-        <tr>
-            <th>Category</th>
-            <th>Amount</th>
-            <th>Date</th>
-            <th>Delete</th>
-        </tr>
-        </thead>
-        <tbody id="expnese-table-body">
+    <div class="container">
+        <!-- Login Container -->
+        <div class="login-container show" id="login-container">
+            <h2>Login</h2>
+            <form id="login-form">
+                <label for="login-username">Username:</label>
+                <input type="text" id="login-username" name="username" required>
+                <label for="login-password">Password:</label>
+                <input type="password" id="login-password" name="password" required>
+                <button type="submit">Login</button>
+            </form>
+            <div class="switch-links">
+                <a href="#" id="show-signup">Sign Up</a>
+            </div>
+        </div>
 
-        </tbody>
-        <tfoot>
-        <tr>
-            <td>Total:</td>
-            <td id="total-amount"></td>
-            <td></td>
-            <td></td>
-        </tr>
-        </tfoot>
-    </table>
-</div>
-<script src="code.js"></script>
+        <!-- Sign Up Container -->
+        <div class="signup-container" id="signup-container">
+            <h2>Sign Up</h2>
+            <form id="signup-form">
+                <label for="signup-username">Username:</label>
+                <input type="text" id="signup-username" name="username" required>
+                <label for="signup-password">Password:</label>
+                <input type="password" id="signup-password" name="password" required>
+                <button type="submit">Sign Up</button>
+            </form>
+            <div class="switch-links">
+                <a href="#" id="show-login">Already have an account? Log In</a>
+            </div>
+        </div>
+
+        <!-- Expense Tracker Container -->
+        <div class="expense-tracker-container" id="expense-tracker-container">
+            <h1>Expense Tracker App</h1>
+            <div class="input-section">
+                <label for="category-select">Category:</label>
+                <select id="category-select">
+                    <option value="">Select a category</option>
+                    <option value="Food & Beverage">Food & Beverage</option>
+                    <option value="Rent">Rent</option>
+                    <option value="Transport">Transport</option>
+                    <option value="Relaxing">Relaxing</option>
+                </select>
+                <label for="amount-input">Amount:</label>
+                <input type="number" id="amount-input">
+                <label for="date-input">Date:</label>
+                <input type="date" id="date-input">
+                <button id="add-btn">Add</button>
+            </div>
+            <div class="expenses-list">
+                <h2>Expenses List</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expense-table-body">
+                        <!-- Dynamic content will be inserted here -->
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>Total:</td>
+                            <td id="total-amount">0</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let expenses = [];
+        let totalAmount = 0;
+
+        const categorySelect = document.getElementById('category-select');
+        const amountInput = document.getElementById('amount-input');
+        const dateInput = document.getElementById('date-input');
+        const addBtn = document.getElementById('add-btn');
+        const expensesTableBody = document.getElementById('expense-table-body');
+        const totalAmountCell = document.getElementById('total-amount');
+
+        addBtn.addEventListener('click', function() {
+            const category = categorySelect.value;
+            const amount = Number(amountInput.value);
+            const date = dateInput.value;
+
+            if (category === '') {
+                alert('Please select a category');
+                return;
+            }
+            if (isNaN(amount) || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+            if (date === '') {
+                alert('Please select a date');
+                return;
+            }
+
+            const expense = { category, amount, date };
+            expenses.push(expense);
+
+            totalAmount += amount;
+            totalAmountCell.textContent = totalAmount.toFixed(2);
+
+            const newRow = expensesTableBody.insertRow();
+
+            const categoryCell = newRow.insertCell();
+            const amountCell = newRow.insertCell();
+            const dateCell = newRow.insertCell();
+            const deleteCell = newRow.insertCell();
+            const deleteBtn = document.createElement('button');
+
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.classList.add('delete-btn');
+            deleteBtn.addEventListener('click', function() {
+                expenses.splice(expenses.indexOf(expense), 1);
+
+                totalAmount -= expense.amount;
+                totalAmountCell.textContent = totalAmount.toFixed(2);
+
+                expensesTableBody.removeChild(newRow);
+            });
+
+            categoryCell.textContent = expense.category;
+            amountCell.textContent = expense.amount.toFixed(2);
+            dateCell.textContent = expense.date;
+            deleteCell.appendChild(deleteBtn);
+
+            categorySelect.value = '';
+            amountInput.value = '';
+            dateInput.value = '';
+        });
+
+        document.getElementById('show-signup').addEventListener('click', function(event) {
+            event.preventDefault();
+            document.getElementById('login-container').classList.remove('show');
+            document.getElementById('signup-container').classList.add('show');
+        });
+
+        document.getElementById('show-login').addEventListener('click', function(event) {
+            event.preventDefault();
+            document.getElementById('signup-container').classList.remove('show');
+            document.getElementById('login-container').classList.add('show');
+        });
+
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+
+            if (users[username] && users[username] === password) {
+                sessionStorage.setItem('loggedIn', 'true');
+                document.getElementById('login-container').classList.remove('show');
+                document.getElementById('expense-tracker-container').classList.add('show');
+            } else {
+                alert('Invalid username or password');
+            }
+        });
+
+        document.getElementById('signup-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('signup-username').value;
+            const password = document.getElementById('signup-password').value;
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+
+            if (users[username]) {
+                alert('Username already exists');
+            } else {
+                users[username] = password;
+                localStorage.setItem('users', JSON.stringify(users));
+                alert('Sign-up successful! You can now log in.');
+                document.getElementById('signup-container').classList.remove('show');
+                document.getElementById('login-container').classList.add('show');
+            }
+        });
+
+        window.onload = function() {
+            if (sessionStorage.getItem('loggedIn')) {
+                document.getElementById('login-container').classList.remove('show');
+                document.getElementById('signup-container').classList.remove('show');
+                document.getElementById('expense-tracker-container').classList.add('show');
+
+                expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+                expenses.forEach(expense => {
+                    totalAmount += expense.amount;
+                    totalAmountCell.textContent = totalAmount.toFixed(2);
+
+                    const newRow = expensesTableBody.insertRow();
+                    const categoryCell = newRow.insertCell();
+                    const amountCell = newRow.insertCell();
+                    const dateCell = newRow.insertCell();
+                    const deleteCell = newRow.insertCell();
+                    const deleteBtn = document.createElement('button');
+                    
+                    deleteBtn.textContent = 'Delete';
+                    deleteBtn.classList.add('delete-btn');
+                    deleteBtn.addEventListener('click', function() {
+                        expenses.splice(expenses.indexOf(expense), 1);
+
+                        totalAmount -= expense.amount;
+                        totalAmountCell.textContent = totalAmount.toFixed(2);
+
+                        expensesTableBody.removeChild(newRow);
+                    });
+
+                    categoryCell.textContent = expense.category;
+                    amountCell.textContent = expense.amount.toFixed(2);
+                    dateCell.textContent = expense.date;
+                    deleteCell.appendChild(deleteBtn);
+                });
+            }
+        };
+    </script>
 </body>
 </html>
