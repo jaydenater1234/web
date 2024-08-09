@@ -15,16 +15,28 @@
             align-items: center;
             height: 100vh;
             color: #333;
+            overflow-x: hidden; /* Prevent horizontal scroll */
         }
         .container {
             width: 100%;
-            max-width: 600px;
+            max-width: 900px;
             background-color: #ffffff;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             overflow: hidden;
             padding: 20px;
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            overflow-y: auto; /* Allow vertical scrolling */
+            max-height: calc(100vh - 40px); /* Ensure container height is responsive */
         }
         .login-container, .signup-container, .expense-tracker-container {
             display: none;
@@ -59,6 +71,8 @@
             border-radius: 8px;
             background-color: #e9ecef;
             margin-bottom: 20px;
+            width: 100%;
+            max-width: 500px;
         }
         .input-section label {
             font-weight: bold;
@@ -89,6 +103,8 @@
             background-color: #218838;
         }
         .expenses-list {
+            width: 100%;
+            max-width: 700px;
             margin-top: 20px;
         }
         table {
@@ -123,85 +139,116 @@
         .delete-btn:hover {
             background-color: #c82333;
         }
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 400px;
+        }
+        .chart-container canvas {
+            width: 100%;
+            height: auto;
+            max-width: 300px; /* Smaller pie chart */
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            .input-section, .expenses-list {
+                width: 100%;
+                max-width: none;
+            }
+            .chart-container {
+                max-width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Login Container -->
-        <div class="login-container show" id="login-container">
-            <h2>Login</h2>
-            <form id="login-form">
-                <label for="login-username">Username:</label>
-                <input type="text" id="login-username" name="username" required>
-                <label for="login-password">Password:</label>
-                <input type="password" id="login-password" name="password" required>
-                <button type="submit">Login</button>
-            </form>
-            <div class="switch-links">
-                <a href="#" id="show-signup">Sign Up</a>
+        <div class="content">
+            <!-- Login Container -->
+            <div class="login-container show" id="login-container">
+                <h2>Login</h2>
+                <form id="login-form">
+                    <label for="login-username">Username:</label>
+                    <input type="text" id="login-username" name="username" required>
+                    <label for="login-password">Password:</label>
+                    <input type="password" id="login-password" name="password" required>
+                    <button type="submit">Login</button>
+                </form>
+                <div class="switch-links">
+                    <a href="#" id="show-signup">Sign Up</a>
+                </div>
             </div>
-        </div>
 
-        <!-- Sign Up Container -->
-        <div class="signup-container" id="signup-container">
-            <h2>Sign Up</h2>
-            <form id="signup-form">
-                <label for="signup-username">Username:</label>
-                <input type="text" id="signup-username" name="username" required>
-                <label for="signup-password">Password:</label>
-                <input type="password" id="signup-password" name="password" required>
-                <button type="submit">Sign Up</button>
-            </form>
-            <div class="switch-links">
-                <a href="#" id="show-login">Already have an account? Log In</a>
+            <!-- Sign Up Container -->
+            <div class="signup-container" id="signup-container">
+                <h2>Sign Up</h2>
+                <form id="signup-form">
+                    <label for="signup-username">Username:</label>
+                    <input type="text" id="signup-username" name="username" required>
+                    <label for="signup-password">Password:</label>
+                    <input type="password" id="signup-password" name="password" required>
+                    <button type="submit">Sign Up</button>
+                </form>
+                <div class="switch-links">
+                    <a href="#" id="show-login">Already have an account? Log In</a>
+                </div>
             </div>
-        </div>
 
-        <!-- Expense Tracker Container -->
-        <div class="expense-tracker-container" id="expense-tracker-container">
-            <h1>Expense Tracker App</h1>
-            <div class="input-section">
-                <label for="category-select">Category:</label>
-                <select id="category-select">
-                    <option value="">Select a category</option>
-                    <option value="Food & Beverage">Food & Beverage</option>
-                    <option value="Rent">Rent</option>
-                    <option value="Transport">Transport</option>
-                    <option value="Relaxing">Relaxing</option>
-                </select>
-                <label for="amount-input">Amount:</label>
-                <input type="number" id="amount-input">
-                <label for="date-input">Date:</label>
-                <input type="date" id="date-input">
-                <button id="add-btn">Add</button>
-            </div>
-            <div class="expenses-list">
-                <h2>Expenses List</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th>Amount</th>
-                            <th>Date</th>
-                            <th>Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody id="expense-table-body">
-                        <!-- Dynamic content will be inserted here -->
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td>Total:</td>
-                            <td id="total-amount">0</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </tfoot>
-                </table>
+            <!-- Expense Tracker Container -->
+            <div class="expense-tracker-container" id="expense-tracker-container">
+                <h1>Expense Tracker App</h1>
+                <div class="input-section">
+                    <label for="category-select">Category:</label>
+                    <select id="category-select">
+                        <option value="">Select a category</option>
+                        <option value="Food & Beverage">Food & Beverage</option>
+                        <option value="Rent">Rent</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Relaxing">Relaxing</option>
+                    </select>
+                    <label for="amount-input">Amount:</label>
+                    <input type="number" id="amount-input">
+                    <label for="date-input">Date:</label>
+                    <input type="date" id="date-input">
+                    <button id="add-btn">Add</button>
+                </div>
+                <div class="expenses-list">
+                    <h2>Expenses List</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expense-table-body">
+                            <!-- Dynamic content will be inserted here -->
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>Total:</td>
+                                <td id="total-amount">0</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <!-- Add Canvas for Pie Chart -->
+                <div class="chart-container">
+                    <canvas id="pie-chart"></canvas>
+                </div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         let expenses = [];
         let totalAmount = 0;
@@ -212,6 +259,51 @@
         const addBtn = document.getElementById('add-btn');
         const expensesTableBody = document.getElementById('expense-table-body');
         const totalAmountCell = document.getElementById('total-amount');
+        const pieCtx = document.getElementById('pie-chart').getContext('2d');
+
+        let pieChart = new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: [], // Labels for the categories
+                datasets: [{
+                    label: 'Expense Distribution',
+                    data: [], // Data for the categories
+                    backgroundColor: [
+                        '#ff6384',
+                        '#36a2eb',
+                        '#cc65fe',
+                        '#ffce56'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        function updateCharts() {
+            const categoryTotals = {};
+            const categories = [];
+            const amounts = [];
+
+            expenses.forEach(expense => {
+                if (!categoryTotals[expense.category]) {
+                    categoryTotals[expense.category] = 0;
+                }
+                categoryTotals[expense.category] += expense.amount;
+            });
+
+            for (const [category, amount] of Object.entries(categoryTotals)) {
+                categories.push(category);
+                amounts.push(amount);
+            }
+
+            // Update Pie Chart
+            pieChart.data.labels = categories;
+            pieChart.data.datasets[0].data = amounts;
+            pieChart.update();
+        }
 
         addBtn.addEventListener('click', function() {
             const category = categorySelect.value;
@@ -238,7 +330,6 @@
             totalAmountCell.textContent = totalAmount.toFixed(2);
 
             const newRow = expensesTableBody.insertRow();
-
             const categoryCell = newRow.insertCell();
             const amountCell = newRow.insertCell();
             const dateCell = newRow.insertCell();
@@ -254,6 +345,7 @@
                 totalAmountCell.textContent = totalAmount.toFixed(2);
 
                 expensesTableBody.removeChild(newRow);
+                updateCharts();
             });
 
             categoryCell.textContent = expense.category;
@@ -264,6 +356,8 @@
             categorySelect.value = '';
             amountInput.value = '';
             dateInput.value = '';
+
+            updateCharts();
         });
 
         document.getElementById('show-signup').addEventListener('click', function(event) {
@@ -337,6 +431,7 @@
                         totalAmountCell.textContent = totalAmount.toFixed(2);
 
                         expensesTableBody.removeChild(newRow);
+                        updateCharts();
                     });
 
                     categoryCell.textContent = expense.category;
@@ -344,8 +439,14 @@
                     dateCell.textContent = expense.date;
                     deleteCell.appendChild(deleteBtn);
                 });
+
+                updateCharts();
             }
         };
+
+        window.addEventListener('beforeunload', function() {
+            localStorage.setItem('expenses', JSON.stringify(expenses));
+        });
     </script>
 </body>
 </html>
