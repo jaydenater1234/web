@@ -1,25 +1,418 @@
-<!doctype html>
-<html class="no-js" lang="">
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>
+    <iframe allow-same-origin></iframe>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker App</title>
+    <script src="https://js.stripe.com/v1/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stripe/stripe-js"></script>
+\
 
-    </title>
+    <style>
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        h1, h2 {
+            margin-bottom: 20px;
+        }
+        .login-container, .signup-container, .expense-tracker-container, .payment-container {
+            display: none;
+        }
+        .show {
+            display: block;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        label {
+            text-align: left;
+        }
+        input[type="text"], input[type="password"], input[type="number"], input[type="date"], select {
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #28a745;
+            color: #fff;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .switch-links a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .switch-links a:hover {
+            text-decoration: underline;
+        }
+        .expenses-list {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #28a745;
+            color: #fff;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tfoot td {
+            font-weight: bold;
+        }
+        .delete-btn {
+            padding: 5px 10px;
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+        .chart-container {
+            margin-top: 20px;
+        }
+        .chart-container canvas {
+            width: 100%;
+            max-width: 400px;
+        }
+        #payment-element {
+            margin: 20px 0;
+        }
+    </style>
 
 </head>
-
 <body>
+    <div class="container">
+        <!-- Login Container -->
+        <div class="login-container show" id="login-container">
+            <h2>Login</h2>
+            <form id="login-form">
+                <label for="login-username">Username:</label>
+                <input type="text" id="login-username" name="username" required>
+                <label for="login-password">Password:</label>
+                <input type="password" id="login-password" name="password" required>
+                <button type="submit">Login</button>
+            </form>
+            <div class="switch-links">
+                <a href="#" id="show-signup">Sign Up</a>
+            </div>
+        </div>
 
-<header>
-    <h1>Welcome to My Website</h1>
-</header>
-<main>
-    <section>
-        <button id="clickMeButton">Click </button>
-        <h2 id="message"></h2>
-    </section>
-</main>
+        <!-- Sign Up Container -->
+        <div class="signup-container" id="signup-container">
+            <h2>Sign Up</h2>
+            <form id="signup-form">
+                <label for="signup-username">Username:</label>
+                <input type="text" id="signup-username" name="username" required>
+                <label for="signup-password">Password:</label>
+                <input type="password" id="signup-password" name="password" required>
+                <button type="submit">Sign Up</button>
+            </form>
+            <div class="switch-links">
+                <a href="#" id="show-login">Already have an account? Log In</a>
+            </div>
+        </div>
 
-</body>
+        <!-- Expense Tracker Container -->
+        <div class="expense-tracker-container" id="expense-tracker-container">
+            <h1>Expense Tracker App</h1>
+            <div class="input-section">
+                <label for="category-select">Category:</label>
+                <select id="category-select">
+                    <option value="">Select a category</option>
+                    <option value="Food & Beverage">Food & Beverage</option>
+                    <option value="Rent">Rent</option>
+                    <option value="Transport">Transport</option>
+                    <option value="Relaxing">Relaxing</option>
+                </select>
+                <label for="amount-input">Amount:</label>
+                <input type="number" id="amount-input">
+                <label for="date-input">Date:</label>
+                <input type="date" id="date-input">
+                <button id="add-btn">Add</button>
+            </div>
+            <div class="expenses-list">
+                <h2>Expenses List</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expense-table-body">
+                        <!-- Dynamic content will be inserted here -->
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>Total:</td>
+                            <td id="total-amount">0</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="chart-container">
+                <canvas id="pie-chart"></canvas>
+            </div>
+            <!-- Payment Container -->
+            <div class="payment-container" id="payment-container">
+                <h2>Complete Your Payment</h2>
+                <div id="payment-element"></div>
+                <button id="pay-button">Pay</button>
+            </div>
+        </div>
+    </div>
+    <button id="pay-button">Pay</button>
+    <div class="container">
+        <!-- Existing content -->
+        <!-- Payment Container -->
+        <div class="payment-container" id="payment-container">
+            <h2>Complete Your Payment</h2>
+            <div id="payment-element"></div>
+            <button id="pay-button">Pay</button>
+        </div>
+    </div>
 
-</html>
+    <!-- Load Stripe.js -->
+=
+    <!-- Load Stripe.js -->
+    
+    <script>
+        // Replace with your own Stripe publishable key
+        const stripe = Stripe('pk_live_51Pli44E70ogpqLLloXFiUqnWdCKMCyQdnfsIL2bBo05gTfPMpz2MphZpcZKcG6HhV3WUaE7XSEhna7k2V4E4scWf00CfVQXKB2'); 
+
+        document.getElementById('pay-button').addEventListener('click', async () => {
+            // Call your backend to create a PaymentIntent
+            const response = await fetch('http://localhost:3000/create-payment-intent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ amount: totalAmount * 100 }) // Amount in cents
+            });
+
+            const { clientSecret } = await response.json();
+
+            const { error } = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: {
+                    card: document.querySelector('input[name="card"]').value,
+                    billing_details: {
+                        name: 'Customer'
+                    }
+                }
+            });
+
+            if (error) {
+                console.error('Error:', error);
+            } else {
+                console.log('Payment successful');
+            }
+        });
+
+        // Expense Tracker JavaScript
+        let expenses = [];
+        let totalAmount = 0;
+
+        const categorySelect = document.getElementById('category-select');
+        const amountInput = document.getElementById('amount-input');
+        const dateInput = document.getElementById('date-input');
+        const addBtn = document.getElementById('add-btn');
+        const expensesTableBody = document.getElementById('expense-table-body');
+        const totalAmountCell = document.getElementById('total-amount');
+        const pieCtx = document.getElementById('pie-chart').getContext('2d');
+
+        let pieChart = new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: [], // Labels for the categories
+                datasets: [{
+                    label: 'Expense Distribution',
+                    data: [], // Data for the categories
+                    backgroundColor: [
+                        '#ff6384',
+                        '#36a2eb',
+                        '#cc65fe',
+                        '#ffce56'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        function updateCharts() {
+            const categoryTotals = {};
+            const categories = [];
+            const amounts = [];
+
+            expenses.forEach(expense => {
+                if (!categoryTotals[expense.category]) {
+                    categoryTotals[expense.category] = 0;
+                }
+                categoryTotals[expense.category] += expense.amount;
+            });
+
+            for (const [category, amount] of Object.entries(categoryTotals)) {
+                categories.push(category);
+                amounts.push(amount);
+            }
+
+            pieChart.data.labels = categories;
+            pieChart.data.datasets[0].data = amounts;
+            pieChart.update();
+        }
+
+        function renderExpenses() {
+            expensesTableBody.innerHTML = '';
+            expenses.forEach((expense, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${expense.category}</td>
+                    <td>${expense.amount}</td>
+                    <td>${expense.date}</td>
+                    <td><button class="delete-btn" data-index="${index}">Delete</button></td>
+                `;
+                expensesTableBody.appendChild(row);
+            });
+            totalAmountCell.textContent = totalAmount;
+        }
+
+        addBtn.addEventListener('click', () => {
+            const category = categorySelect.value;
+            const amount = parseFloat(amountInput.value);
+            const date = dateInput.value;
+
+            if (category && amount && date) {
+                expenses.push({ category, amount, date });
+                totalAmount += amount;
+                updateCharts();
+                renderExpenses();
+                categorySelect.value = '';
+                amountInput.value = '';
+                dateInput.value = '';
+            } else {
+                alert('Please fill in all fields.');
+            }
+        });
+
+        expensesTableBody.addEventListener('click', (event) => {
+            if (event.target.classList.contains('delete-btn')) {
+                const index = event.target.dataset.index;
+                totalAmount -= expenses[index].amount;
+                expenses.splice(index, 1);
+                updateCharts();
+                renderExpenses();
+            }
+        });
+
+        // Form Handling JavaScript
+        const loginContainer = document.getElementById('login-container');
+        const signupContainer = document.getElementById('signup-container');
+        const expenseTrackerContainer = document.getElementById('expense-tracker-container');
+        const showSignup = document.getElementById('show-signup');
+        const showLogin = document.getElementById('show-login');
+
+        showSignup.addEventListener('click', () => {
+            loginContainer.classList.remove('show');
+            signupContainer.classList.add('show');
+        });
+
+        showLogin.addEventListener('click', () => {
+            signupContainer.classList.remove('show');
+            loginContainer.classList.add('show');
+        });
+
+        document.getElementById('login-form').addEventListener('submit', (event) => {
+            event.preventDefault();
+            // Perform login via fetch API or other methods here
+            loginContainer.classList.remove('show');
+            expenseTrackerContainer.classList.add('show');
+        });
+
+        document.getElementById('signup-form').addEventListener('submit', (event) => {
+            event.preventDefault();
+            // Perform signup via fetch API or other methods here
+            signupContainer.classList.remove('show');
+            expenseTrackerContainer.classList.add('show');
+        });
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+    const { Elements, CardElement, useStripe, useElements } = await loadStripe('pk_live_51Pli44E70ogpqLLloXFiUqnWdCKMCyQdnfsIL2bBo05gTfPMpz2MphZpcZKcG6HhV3WUaE7XSEhna7k2V4E4scWf00CfVQXKB2');
+
+    const stripe = useStripe();
+    const elements = useElements();
+
+    const cardElement = elements.create('card');
+    cardElement.mount('#payment-element');
+
+    document.getElementById('pay-button').addEventListener('click', async () => {
+        const response = await fetch('http://localhost:3000/create-payment-intent', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ amount: 1000 }) // Example amount in cents
+        });
+
+        const { clientSecret } = await response.json();
+
+        const { error } = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: {
+                card: cardElement,
+                billing_details: {
+                    name: 'Customer'
+                }
+            }
+        });
+
+        if (error) {
+            console.error('Payment failed:', error);
+        } else {
+            console.log('Payment succeeded');
+        }
+    });
+});

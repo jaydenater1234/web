@@ -1,0 +1,8 @@
+/**
+ * Skipped minification because the original files appears to be already minified.
+ * Original file: /npm/@stripe/stripe-js@4.2.0/lib/index.js
+ *
+ * Do NOT use SRI with dynamically generated files! More information: https://www.jsdelivr.com/using-sri-with-dynamic-files
+ */
+// eslint-disable-next-line no-undef
+export * from "../dist";
