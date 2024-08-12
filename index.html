@@ -6,11 +6,11 @@
   <title>Expense Tracker App</title>
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <iframe src="https://pay.google.com/gp/p/ui/payframe?origin=file%3A%2F%2F&amp" height="0" width="0" allowpaymentrequest="true" style="display: none; visibility: hidden;"></iframe>
+  <script src="https://pay.google.com/gp/p/js/pay.js" async></script>
   <script src="server.js" defer></script>
-  <script async src="https://pay.google.com/gp/p/js/pay.js"></script>
 </head>
 <style>
+   <style>
     * {
         box-sizing: border-box;
         margin: 0;
@@ -128,7 +128,7 @@
         }
     }
 </style>
-
+</style>
 <body>
     <div class="container">
         <!-- Expense Tracker Container -->
@@ -182,18 +182,29 @@
     </div>
 
     <script>
-        function initializeGooglePay() {
-            const paymentsClient = new google.payments.api.PaymentsClient({ environment: 'TEST' });
+        let paymentsClient; // Define in global scope
 
-            const googlePayButton = paymentsClient.createButton({
-                buttonColor: 'black',
-                buttonType: 'pay',
-                onClick: onGooglePayButtonClicked
-            });
-            document.getElementById('google-pay-button-container').appendChild(googlePayButton);
+        function initializeGooglePay() {
+            if (typeof google !== 'undefined' && google.payments && google.payments.api) {
+                paymentsClient = new google.payments.api.PaymentsClient({ environment: 'TEST' });
+
+                const googlePayButton = paymentsClient.createButton({
+                    buttonColor: 'black',
+                    buttonType: 'pay',
+                    onClick: onGooglePayButtonClicked
+                });
+                document.getElementById('google-pay-button-container').appendChild(googlePayButton);
+            } else {
+                console.error('Google Pay API is not loaded.');
+            }
         }
 
         async function onGooglePayButtonClicked() {
+            if (!paymentsClient) {
+                console.error('PaymentsClient is not initialized.');
+                return;
+            }
+
             try {
                 const paymentDataRequest = {
                     apiVersion: 2,
@@ -204,13 +215,6 @@
                             allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
                             allowedCardNetworks: ['AMEX', 'DISCOVER', 'MASTERCARD', 'VISA']
                         },
-                        tokenizationSpecification: {
-                            type: 'PAYMENT_GATEWAY',
-                            parameters: {
-                                gateway: 'stripe',
-                                gatewayMerchantId: 'your_stripe_merchant_id'
-                            }
-                        }
                     }],
                     merchantInfo: {
                         merchantName: 'Example Merchant',
@@ -244,93 +248,8 @@
             }
         }
 
-        const expenses = [];
-        const expenseTableBody = document.getElementById('expense-table-body');
-        const totalAmountElement = document.getElementById('total-amount');
-
-        document.getElementById('add-btn').addEventListener('click', () => {
-            const category = document.getElementById('category-select').value;
-            const amount = parseFloat(document.getElementById('amount-input').value);
-            const date = document.getElementById('date-input').value;
-
-            if (category && !isNaN(amount) && date) {
-                const expense = { category, amount, date };
-                expenses.push(expense);
-                updateExpenseTable();
-                updatePieChart();
-            }
-        });
-
-        function updateExpenseTable() {
-            expenseTableBody.innerHTML = '';
-            let totalAmount = 0;
-
-            expenses.forEach((expense, index) => {
-                totalAmount += expense.amount;
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${expense.category}</td>
-                    <td>${expense.amount.toFixed(2)}</td>
-                    <td>${expense.date}</td>
-                    <td><button class="delete-btn" onclick="deleteExpense(${index})">Delete</button></td>
-                `;
-                expenseTableBody.appendChild(row);
-            });
-
-            totalAmountElement.textContent = totalAmount.toFixed(2);
-        }
-
-        function deleteExpense(index) {
-            expenses.splice(index, 1);
-            updateExpenseTable();
-            updatePieChart();
-        }
-
-        const ctx = document.getElementById('pie-chart').getContext('2d');
-        const pieChart = new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: [],
-                datasets: [{
-                    data: [],
-                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(tooltipItem) {
-                                const dataLabel = tooltipItem.label || '';
-                                const value = tooltipItem.raw || 0;
-                                return `${dataLabel}: $${value.toFixed(2)}`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-        function updatePieChart() {
-            const categoryTotals = {};
-            expenses.forEach(expense => {
-                if (!categoryTotals[expense.category]) {
-                    categoryTotals[expense.category] = 0;
-                }
-                categoryTotals[expense.category] += expense.amount;
-            });
-
-            pieChart.data.labels = Object.keys(categoryTotals);
-            pieChart.data.datasets[0].data = Object.values(categoryTotals);
-            pieChart.update();
-        }
-
-        // Initialize Google Pay Button
-        window.onload = initializeGooglePay;
+        // Initialize Google Pay Button after the Google Pay library is loaded
+        window.addEventListener('load', initializeGooglePay);
     </script>
 </body>
 </html>

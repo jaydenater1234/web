@@ -12,7 +12,11 @@ function initializeGooglePay() {
 }
 
 async function onGooglePayButtonClicked() {
-
+    try {
+        if (!paymentsClient) {
+            console.error('PaymentsClient is not initialized.');
+            return;
+        }
 
         const paymentDataRequest = {
             apiVersion: 2,
