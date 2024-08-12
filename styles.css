@@ -1,0 +1,89 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+}
+
+.container {
+    text-align: center;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+}
+
+h1, h2 {
+    margin-bottom: 20px;
+}
+
+.login-container, .signup-container, .expense-tracker-container {
+    display: none;
+}
+
+.show {
+    display: block;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+input[type="text"], input[type="password"], input[type="number"], input[type="date"], select {
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+button {
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    background-color: #28a745;
+    color: #fff;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+.chart-container canvas {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+}
+
+@media (max-width: 768px) {
+    body {
+        font-size: 12px;
+    }
+
+    button, input, select {
+        font-size: 12px;
+    }
+
+    .container {
+        padding: 10px;
+    }
+
+    .chart-container canvas {
+        max-width: 100%;
+    }
+}

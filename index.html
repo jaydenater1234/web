@@ -1,123 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <iframe allow-same-origin></iframe>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expense Tracker App</title>
-    <script src="https://js.stripe.com/v1/"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@stripe/stripe-js"></script>
-\
-
-    <style>
-        
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-        }
-        .container {
-            text-align: center;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 600px;
-        }
-        h1, h2 {
-            margin-bottom: 20px;
-        }
-        .login-container, .signup-container, .expense-tracker-container, .payment-container {
-            display: none;
-        }
-        .show {
-            display: block;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        label {
-            text-align: left;
-        }
-        input[type="text"], input[type="password"], input[type="number"], input[type="date"], select {
-            padding: 10px;
-            border: 1px solid #ced4da;
-            border-radius: 5px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            background-color: #28a745;
-            color: #fff;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .switch-links a {
-            color: #007bff;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .switch-links a:hover {
-            text-decoration: underline;
-        }
-        .expenses-list {
-            margin-top: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #dee2e6;
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #28a745;
-            color: #fff;
-        }
-        tbody tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        tfoot td {
-            font-weight: bold;
-        }
-        .delete-btn {
-            padding: 5px 10px;
-            background-color: #dc3545;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .delete-btn:hover {
-            background-color: #c82333;
-        }
-        .chart-container {
-            margin-top: 20px;
-        }
-        .chart-container canvas {
-            width: 100%;
-            max-width: 400px;
-        }
-        #payment-element {
-            margin: 20px 0;
-        }
-    </style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense Tracker App</title>
+  <link rel="stylesheet" href="styles.css">
+  <script async src="https://pay.google.com/gp/p/js/pay.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="server.js" defer></script>
+  <iframe src="https://pay.google.com/gp/p/ui/payframe?origin=file%3A%2F%2F&amp;mid=" height="0" width="0" allowpaymentrequest="true" style="display: none; visibility: hidden;"></iframe>
 </head>
 <body>
     <div class="container">
@@ -196,99 +87,158 @@
             <div class="chart-container">
                 <canvas id="pie-chart"></canvas>
             </div>
-            <!-- Payment Container -->
-            <div class="payment-container" id="payment-container">
-                <h2>Complete Your Payment</h2>
-                <div id="payment-element"></div>
-                <button id="pay-button">Pay</button>
-            </div>
-        </div>
-    </div>
-    <button id="pay-button">Pay</button>
-    <div class="container">
-        <!-- Existing content -->
-        <!-- Payment Container -->
-        <div class="payment-container" id="payment-container">
-            <h2>Complete Your Payment</h2>
-            <div id="payment-element"></div>
-            <button id="pay-button">Pay</button>
+            <!-- Google Pay Container -->
+            <div id="google-pay-button-container"></div>
         </div>
     </div>
 
-    <!-- Load Stripe.js -->
-=
-    <!-- Load Stripe.js -->
-    
     <script>
-        // Replace with your own Stripe publishable key
-        const stripe = Stripe('pk_live_51Pli44E70ogpqLLloXFiUqnWdCKMCyQdnfsIL2bBo05gTfPMpz2MphZpcZKcG6HhV3WUaE7XSEhna7k2V4E4scWf00CfVQXKB2'); 
+      const fontUrl = 'https://fonts.googleapis.com/css?family=Google+Sans:500'; // Correct
+        function initializeGooglePay() {
+            const paymentsClient = new google.payments.api.PaymentsClient({ environment: 'TEST' });
 
-        document.getElementById('pay-button').addEventListener('click', async () => {
-            // Call your backend to create a PaymentIntent
-            const response = await fetch('http://localhost:3000/create-payment-intent', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ amount: totalAmount * 100 }) // Amount in cents
+            const googlePayButton = paymentsClient.createButton({
+                buttonColor: 'black',
+                buttonType: 'pay',
+                onClick: onGooglePayButtonClicked
             });
+            document.getElementById('google-pay-button-container').appendChild(googlePayButton);
+        }
 
-            const { clientSecret } = await response.json();
-
-            const { error } = await stripe.confirmCardPayment(clientSecret, {
-                payment_method: {
-                    card: document.querySelector('input[name="card"]').value,
-                    billing_details: {
-                        name: 'Customer'
+        async function onGooglePayButtonClicked() {
+            try {
+                const paymentDataRequest = {
+                    apiVersion: 2,
+                    apiVersionMinor: 0,
+                    allowedPaymentMethods: [{
+                        type: 'CARD',
+                        parameters: {
+                            allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+                            allowedCardNetworks: ['AMEX', 'DISCOVER', 'MASTERCARD', 'VISA']
+                        },
+                        tokenizationSpecification: {
+                            type: 'PAYMENT_GATEWAY',
+                            parameters: {
+                                gateway: 'stripe',
+                                gatewayMerchantId: 'your_stripe_merchant_id'
+                            }
+                        }
+                    }],
+                    merchantInfo: {
+                        merchantName: 'Example Merchant',
+                        merchantId: 'BCR2DN4TSWC73GJ5'
+                    },
+                    transactionInfo: {
+                        totalPriceStatus: 'FINAL',
+                        totalPrice: '10.00',
+                        currencyCode: 'USD'
                     }
-                }
-            });
+                };
 
-            if (error) {
-                console.error('Error:', error);
-            } else {
-                console.log('Payment successful');
+                const paymentData = await paymentsClient.loadPaymentData(paymentDataRequest);
+                console.log('Payment data received:', paymentData);
+
+                const response = await fetch('http://localhost:3000/process-google-pay', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(paymentData)
+                });
+
+                if (response.ok) {
+                    console.log('Payment successful');
+                } else {
+                    console.error('Payment failed:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error during Google Pay transaction:', error);
+            }
+        }
+
+        document.getElementById('show-signup').addEventListener('click', () => {
+            document.getElementById('login-container').classList.remove('show');
+            document.getElementById('signup-container').classList.add('show');
+        });
+
+        document.getElementById('show-login').addEventListener('click', () => {
+            document.getElementById('signup-container').classList.remove('show');
+            document.getElementById('login-container').classList.add('show');
+        });
+
+        const expenses = [];
+        const expenseTableBody = document.getElementById('expense-table-body');
+        const totalAmountElement = document.getElementById('total-amount');
+
+        document.getElementById('add-btn').addEventListener('click', () => {
+            const category = document.getElementById('category-select').value;
+            const amount = parseFloat(document.getElementById('amount-input').value);
+            const date = document.getElementById('date-input').value;
+
+            if (category && !isNaN(amount) && date) {
+                const expense = { category, amount, date };
+                expenses.push(expense);
+                updateExpenseTable();
+                updatePieChart();
             }
         });
 
-        // Expense Tracker JavaScript
-        let expenses = [];
-        let totalAmount = 0;
+        function updateExpenseTable() {
+            expenseTableBody.innerHTML = '';
+            let totalAmount = 0;
 
-        const categorySelect = document.getElementById('category-select');
-        const amountInput = document.getElementById('amount-input');
-        const dateInput = document.getElementById('date-input');
-        const addBtn = document.getElementById('add-btn');
-        const expensesTableBody = document.getElementById('expense-table-body');
-        const totalAmountCell = document.getElementById('total-amount');
-        const pieCtx = document.getElementById('pie-chart').getContext('2d');
+            expenses.forEach((expense, index) => {
+                totalAmount += expense.amount;
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${expense.category}</td>
+                    <td>${expense.amount.toFixed(2)}</td>
+                    <td>${expense.date}</td>
+                    <td><button class="delete-btn" onclick="deleteExpense(${index})">Delete</button></td>
+                `;
+                expenseTableBody.appendChild(row);
+            });
 
-        let pieChart = new Chart(pieCtx, {
+            totalAmountElement.textContent = totalAmount.toFixed(2);
+        }
+
+        function deleteExpense(index) {
+            expenses.splice(index, 1);
+            updateExpenseTable();
+            updatePieChart();
+        }
+
+        const ctx = document.getElementById('pie-chart').getContext('2d');
+        const pieChart = new Chart(ctx, {
             type: 'pie',
             data: {
-                labels: [], // Labels for the categories
+                labels: [],
                 datasets: [{
-                    label: 'Expense Distribution',
-                    data: [], // Data for the categories
-                    backgroundColor: [
-                        '#ff6384',
-                        '#36a2eb',
-                        '#cc65fe',
-                        '#ffce56'
-                    ]
+                    data: [],
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                const dataLabel = tooltipItem.label || '';
+                                const value = tooltipItem.raw || 0;
+                                return `${dataLabel}: $${value.toFixed(2)}`;
+                            }
+                        }
+                    }
+                }
             }
         });
 
-        function updateCharts() {
+        function updatePieChart() {
             const categoryTotals = {};
-            const categories = [];
-            const amounts = [];
-
             expenses.forEach(expense => {
                 if (!categoryTotals[expense.category]) {
                     categoryTotals[expense.category] = 0;
@@ -296,123 +246,13 @@
                 categoryTotals[expense.category] += expense.amount;
             });
 
-            for (const [category, amount] of Object.entries(categoryTotals)) {
-                categories.push(category);
-                amounts.push(amount);
-            }
-
-            pieChart.data.labels = categories;
-            pieChart.data.datasets[0].data = amounts;
+            pieChart.data.labels = Object.keys(categoryTotals);
+            pieChart.data.datasets[0].data = Object.values(categoryTotals);
             pieChart.update();
         }
 
-        function renderExpenses() {
-            expensesTableBody.innerHTML = '';
-            expenses.forEach((expense, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${expense.category}</td>
-                    <td>${expense.amount}</td>
-                    <td>${expense.date}</td>
-                    <td><button class="delete-btn" data-index="${index}">Delete</button></td>
-                `;
-                expensesTableBody.appendChild(row);
-            });
-            totalAmountCell.textContent = totalAmount;
-        }
-
-        addBtn.addEventListener('click', () => {
-            const category = categorySelect.value;
-            const amount = parseFloat(amountInput.value);
-            const date = dateInput.value;
-
-            if (category && amount && date) {
-                expenses.push({ category, amount, date });
-                totalAmount += amount;
-                updateCharts();
-                renderExpenses();
-                categorySelect.value = '';
-                amountInput.value = '';
-                dateInput.value = '';
-            } else {
-                alert('Please fill in all fields.');
-            }
-        });
-
-        expensesTableBody.addEventListener('click', (event) => {
-            if (event.target.classList.contains('delete-btn')) {
-                const index = event.target.dataset.index;
-                totalAmount -= expenses[index].amount;
-                expenses.splice(index, 1);
-                updateCharts();
-                renderExpenses();
-            }
-        });
-
-        // Form Handling JavaScript
-        const loginContainer = document.getElementById('login-container');
-        const signupContainer = document.getElementById('signup-container');
-        const expenseTrackerContainer = document.getElementById('expense-tracker-container');
-        const showSignup = document.getElementById('show-signup');
-        const showLogin = document.getElementById('show-login');
-
-        showSignup.addEventListener('click', () => {
-            loginContainer.classList.remove('show');
-            signupContainer.classList.add('show');
-        });
-
-        showLogin.addEventListener('click', () => {
-            signupContainer.classList.remove('show');
-            loginContainer.classList.add('show');
-        });
-
-        document.getElementById('login-form').addEventListener('submit', (event) => {
-            event.preventDefault();
-            // Perform login via fetch API or other methods here
-            loginContainer.classList.remove('show');
-            expenseTrackerContainer.classList.add('show');
-        });
-
-        document.getElementById('signup-form').addEventListener('submit', (event) => {
-            event.preventDefault();
-            // Perform signup via fetch API or other methods here
-            signupContainer.classList.remove('show');
-            expenseTrackerContainer.classList.add('show');
-        });
-        
-        document.addEventListener('DOMContentLoaded', async () => {
-    const { Elements, CardElement, useStripe, useElements } = await loadStripe('pk_live_51Pli44E70ogpqLLloXFiUqnWdCKMCyQdnfsIL2bBo05gTfPMpz2MphZpcZKcG6HhV3WUaE7XSEhna7k2V4E4scWf00CfVQXKB2');
-
-    const stripe = useStripe();
-    const elements = useElements();
-
-    const cardElement = elements.create('card');
-    cardElement.mount('#payment-element');
-
-    document.getElementById('pay-button').addEventListener('click', async () => {
-        const response = await fetch('http://localhost:3000/create-payment-intent', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ amount: 1000 }) // Example amount in cents
-        });
-
-        const { clientSecret } = await response.json();
-
-        const { error } = await stripe.confirmCardPayment(clientSecret, {
-            payment_method: {
-                card: cardElement,
-                billing_details: {
-                    name: 'Customer'
-                }
-            }
-        });
-
-        if (error) {
-            console.error('Payment failed:', error);
-        } else {
-            console.log('Payment succeeded');
-        }
-    });
-});
+        // Initialize Google Pay Button
+        window.onload = initializeGooglePay;
+    </script>
+</body>
+</html>
