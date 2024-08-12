@@ -1,5 +1,7 @@
+let paymentsClient; // Define in global scope
+
 function initializeGooglePay() {
-    const paymentsClient = new google.payments.api.PaymentsClient({ environment: 'TEST' });
+    paymentsClient = new google.payments.api.PaymentsClient({ environment: 'TEST' });
 
     const googlePayButton = paymentsClient.createButton({
         buttonColor: 'black',
@@ -11,6 +13,11 @@ function initializeGooglePay() {
 
 async function onGooglePayButtonClicked() {
     try {
+        if (!paymentsClient) {
+            console.error('PaymentsClient is not initialized.');
+            return;
+        }
+
         const paymentDataRequest = {
             apiVersion: 2,
             apiVersionMinor: 0,
@@ -19,15 +26,15 @@ async function onGooglePayButtonClicked() {
                 parameters: {
                     allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
                     allowedCardNetworks: ['AMEX', 'DISCOVER', 'MASTERCARD', 'VISA']
-                }
+                },
             }],
             merchantInfo: {
                 merchantName: 'Example Merchant',
-                merchantId: 'BCR2DN4TSWC73GJ5' // Replace with your Merchant ID
+                merchantId: 'BCR2DN4TSWC73GJ5'
             },
             transactionInfo: {
                 totalPriceStatus: 'FINAL',
-                totalPrice: '10.00', // Amount in USD
+                totalPrice: '10.00',
                 currencyCode: 'USD'
             }
         };
@@ -35,7 +42,6 @@ async function onGooglePayButtonClicked() {
         const paymentData = await paymentsClient.loadPaymentData(paymentDataRequest);
         console.log('Payment data received:', paymentData);
 
-        // Send paymentData to your server for processing
         const response = await fetch('http://localhost:3000/process-google-pay', {
             method: 'POST',
             headers: {

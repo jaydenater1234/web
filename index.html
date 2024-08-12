@@ -5,43 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Expense Tracker App</title>
   <link rel="stylesheet" href="styles.css">
-  <script async src="https://pay.google.com/gp/p/js/pay.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="server.js" defer></script>
   <iframe src="https://pay.google.com/gp/p/ui/payframe?origin=file%3A%2F%2F&amp" height="0" width="0" allowpaymentrequest="true" style="display: none; visibility: hidden;"></iframe>
+  <script src="server.js" defer></script>
+  <script async src="https://pay.google.com/gp/p/js/pay.js"></script>
 </head>
 <body>
     <div class="container">
-        <!-- Login Container -->
-        <div class="login-container show" id="login-container">
-            <h2>Login</h2>
-            <form id="login-form">
-                <label for="login-username">Username:</label>
-                <input type="text" id="login-username" name="username" required>
-                <label for="login-password">Password:</label>
-                <input type="password" id="login-password" name="password" required>
-                <button type="submit">Login</button>
-            </form>
-            <div class="switch-links">
-                <a href="#" id="show-signup">Sign Up</a>
-            </div>
-        </div>
-
-        <!-- Sign Up Container -->
-        <div class="signup-container" id="signup-container">
-            <h2>Sign Up</h2>
-            <form id="signup-form">
-                <label for="signup-username">Username:</label>
-                <input type="text" id="signup-username" name="username" required>
-                <label for="signup-password">Password:</label>
-                <input type="password" id="signup-password" name="password" required>
-                <button type="submit">Sign Up</button>
-            </form>
-            <div class="switch-links">
-                <a href="#" id="show-login">Already have an account? Log In</a>
-            </div>
-        </div>
-
         <!-- Expense Tracker Container -->
         <div class="expense-tracker-container" id="expense-tracker-container">
             <h1>Expense Tracker App</h1>
@@ -93,7 +63,6 @@
     </div>
 
     <script>
-      const fontUrl = 'https://fonts.googleapis.com/css?family=Google+Sans:500'; // Correct
         function initializeGooglePay() {
             const paymentsClient = new google.payments.api.PaymentsClient({ environment: 'TEST' });
 
@@ -155,16 +124,6 @@
                 console.error('Error during Google Pay transaction:', error);
             }
         }
-
-        document.getElementById('show-signup').addEventListener('click', () => {
-            document.getElementById('login-container').classList.remove('show');
-            document.getElementById('signup-container').classList.add('show');
-        });
-
-        document.getElementById('show-login').addEventListener('click', () => {
-            document.getElementById('signup-container').classList.remove('show');
-            document.getElementById('login-container').classList.add('show');
-        });
 
         const expenses = [];
         const expenseTableBody = document.getElementById('expense-table-body');

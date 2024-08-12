@@ -28,9 +28,6 @@ h1, h2 {
     margin-bottom: 20px;
 }
 
-.login-container, .signup-container, .expense-tracker-container {
-    display: none;
-}
 
 .show {
     display: block;
