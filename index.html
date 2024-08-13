@@ -8,6 +8,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="server.js" defer></script>
   <script async src="https://pay.google.com/gp/p/js/pay.js"></script>
+  <script src="client.js" defer></script>
 </head>
 <style>
  
@@ -213,7 +214,13 @@
                             allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
                             allowedCardNetworks: ['AMEX', 'DISCOVER', 'MASTERCARD', 'VISA']
                         },
-                        
+                        tokenizationSpecification: {
+                    type: 'PAYMENT_GATEWAY',
+                    parameters: {
+                        gateway: 'cardconnect',
+                        gatewayMerchantId: '496082673999' // Replace with your Card Connect merchant ID
+                    }
+                }
                     }],
                     merchantInfo: {
                         merchantName: 'Example Merchant',
@@ -226,26 +233,28 @@
                     }
                 };
 
-                const paymentData = await paymentsClient.loadPaymentData(paymentDataRequest);
-                console.log('Payment data received:', paymentData);
-                const response = await fetch('http://localhost:3000/process-google-pay', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(paymentData)
-});
+                                    // Load payment data
+                    const paymentData = await paymentsClient.loadPaymentData(paymentDataRequest);
+                    console.log('Payment data received:', paymentData);
 
-                if (response.ok) {
-                    console.log('Payment successful');
-                } else {
-                    console.error('Payment failed:', response.statusText);
+                    // Send payment data to server
+                    const response = await fetch(' http://localhost:3000', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(paymentData)
+                    });
+
+                    if (response.ok) {
+                        console.log('Payment successful');
+                    } else {
+                        console.error('Payment failed:', response.statusText);
+                    }
+                } catch (error) {
+                    console.error('Error during Google Pay transaction:', error);
                 }
-            } catch (error) {
-                console.error('Error during Google Pay transaction:', error);
             }
-        }
-
-        // Initialize Google Pay Button after the Google Pay library is loaded
-        window.addEventListener('load', initializeGooglePay);
-    </script>
+        </script>
 </body>
 </html>
