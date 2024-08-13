@@ -2,7 +2,7 @@
 let paymentsClient;
 
 function initializeGooglePay() {
-    paymentsClient = new google.payments.api.PaymentsClient({ environment: 'TEST' });
+    paymentsClient = new google.payments.api.PaymentsClient({ environment: 'PRODUCTION' });
 
     const googlePayButton = paymentsClient.createButton({
         buttonColor: 'black',
