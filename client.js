@@ -38,7 +38,7 @@ async function onGooglePayButtonClicked() {
                 }
             }],
             merchantInfo: {
-                merchantName: 'Example Merchant',
+                merchantName: 'J.L.R',
                 merchantId: 'BCR2DN4TSWC73GJ5'
             },
             transactionInfo: {
