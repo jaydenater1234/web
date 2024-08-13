@@ -6,8 +6,8 @@
   <title>Expense Tracker App</title>
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://pay.google.com/gp/p/js/pay.js" async></script>
   <script src="server.js" defer></script>
+  <script async src="https://pay.google.com/gp/p/js/pay.js"></script>
 </head>
 <style>
  
@@ -182,8 +182,6 @@
     </div>
 
     <script>
-        let paymentsClient; // Define in global scope
-
         function initializeGooglePay() {
             if (typeof google !== 'undefined' && google.payments && google.payments.api) {
                 paymentsClient = new google.payments.api.PaymentsClient({ environment: 'TEST' });
@@ -230,14 +228,11 @@
 
                 const paymentData = await paymentsClient.loadPaymentData(paymentDataRequest);
                 console.log('Payment data received:', paymentData);
-
                 const response = await fetch('http://localhost:3000/process-google-pay', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(paymentData)
-                });
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(paymentData)
+});
 
                 if (response.ok) {
                     console.log('Payment successful');

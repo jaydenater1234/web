@@ -1,10 +1,21 @@
-async function onGooglePayButtonClicked() {
-    if (!paymentsClient) {
-        console.error('PaymentsClient is not initialized.');
-        return;
-    }
+function initializeGooglePay() {
+    const paymentsClient = new google.payments.api.PaymentsClient({ environment: 'PRODUCTION' });
 
+    const googlePayButton = paymentsClient.createButton({
+        buttonColor: 'black',
+        buttonType: 'pay',
+        onClick: onGooglePayButtonClicked
+    });
+    document.getElementById('google-pay-button-container').appendChild(googlePayButton);
+}
+
+async function onGooglePayButtonClicked() {
     try {
+        if (!paymentsClient) {
+            console.error('PaymentsClient is not initialized.');
+            return;
+        }
+
         const paymentDataRequest = {
             apiVersion: 2,
             apiVersionMinor: 0,
@@ -17,14 +28,14 @@ async function onGooglePayButtonClicked() {
                 tokenizationSpecification: {
                     type: 'PAYMENT_GATEWAY',
                     parameters: {
-                        gateway: 'stripe', // Change to your payment gateway
-                        gatewayMerchantId: 'BCR2DN4T2XXODA3Y' // Change to your gateway merchant ID
+                        gateway: 'cardconnect', // Replace with your live gateway
+                        gatewayMerchantId: '831831831921' // Replace with your live merchant ID
                     }
                 }
             }],
             merchantInfo: {
                 merchantName: 'J.L.R',
-                merchantId: 'BCR2DN4TSWC73GJ5' // Your Google Pay merchant ID
+                merchantId: 'BCR2DN4T2XXODA3Y' // Replace with your live Google Pay merchant ID
             },
             transactionInfo: {
                 totalPriceStatus: 'FINAL',
@@ -35,7 +46,6 @@ async function onGooglePayButtonClicked() {
 
         const paymentData = await paymentsClient.loadPaymentData(paymentDataRequest);
         console.log('Payment data received:', paymentData);
-
         const response = await fetch('http://localhost:3000/process-google-pay', {
             method: 'POST',
             headers: {
