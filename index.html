@@ -185,7 +185,7 @@
     <script>
         function initializeGooglePay() {
             if (typeof google !== 'undefined' && google.payments && google.payments.api) {
-                paymentsClient = new google.payments.api.PaymentsClient({ environment: 'TEST' });
+                paymentsClient = new google.payments.api.PaymentsClient({ environment: 'PRODUCTION' });
 
                 const googlePayButton = paymentsClient.createButton({
                     buttonColor: 'black',

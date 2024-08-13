@@ -47,6 +47,7 @@ async function onGooglePayButtonClicked() {
                 currencyCode: 'USD'
             }
         };
+    
 
         const paymentData = await paymentsClient.loadPaymentData(paymentDataRequest);
         console.log('Payment data received:', paymentData);
