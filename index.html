@@ -11,250 +11,252 @@
   <script src="client.js" defer></script>
 </head>
 <style>
- 
- * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
+  /* Your existing CSS styles */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    background-color: #F2F2F2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 10px;
+  }
+
+  .container {
+    text-align: center;
+    padding: 20px;
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid #E0E0E0;
+  }
+
+  h1, h2 {
+    color: #333333;
+    margin-bottom: 15px;
+    font-weight: normal;
+  }
+
+  .input-section, .expenses-list, .chart-container {
+    background-color: #F9F9F9;
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #E0E0E0;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  input[type="text"], input[type="password"], input[type="number"], input[type="date"], select {
+    padding: 8px;
+    border: 1px solid #B5B5B5;
+    border-radius: 4px;
+    font-size: 14px;
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+
+  button {
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    background-color: #EC5B5B;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #D9534F;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+  }
+
+  th, td {
+    padding: 8px;
+    border: 1px solid #E0E0E0;
+    text-align: left;
+  }
+
+  th {
+    background-color: #EC5B5B;
+    color: #FFFFFF;
+  }
+
+  tfoot {
+    font-weight: bold;
+    background-color: #F9F9F9;
+  }
+
+  .chart-container canvas {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+  }
+
+  @media (max-width: 768px) {
+    body {
+      font-size: 12px;
     }
 
-    body {
-        font-family: Arial, sans-serif;
-        font-size: 14px; /* Slightly smaller font size */
-        background-color: #F2F2F2; /* Light gray background for a clean look */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        padding: 10px; /* Padding around the body for a more contained appearance */
+    button, input, select {
+      font-size: 12px;
     }
 
     .container {
-        text-align: center;
-        padding: 20px;
-        background-color: #FFFFFF; /* White background for the container */
-        border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 500px; /* Reduced max width for a more compact design */
-        border: 1px solid #E0E0E0; /* Light gray border */
+      padding: 15px;
     }
 
-    h1, h2 {
-        color: #333333; /* Dark gray for text */
-        margin-bottom: 15px;
-        font-weight: normal;
+    .chart-container {
+      padding: 5px;
     }
-
-    .input-section, .expenses-list, .chart-container {
-        background-color: #F9F9F9; /* Very light gray for sections */
-        border-radius: 6px;
-        padding: 10px;
-        margin-bottom: 15px;
-        border: 1px solid #E0E0E0; /* Consistent border color */
-    }
-
-    form {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    input[type="text"], input[type="password"], input[type="number"], input[type="date"], select {
-        padding: 8px;
-        border: 1px solid #B5B5B5;
-        border-radius: 4px;
-        font-size: 14px; /* Reduced font size */
-        box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
-    }
-
-    button {
-        padding: 8px 16px;
-        font-size: 14px;
-        border: none;
-        border-radius: 4px;
-        background-color: #EC5B5B; /* Watermelon red */
-        color: #FFFFFF;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-        background-color: #D9534F; /* Darker watermelon red */
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 15px;
-    }
-
-    th, td {
-        padding: 8px;
-        border: 1px solid #E0E0E0;
-        text-align: left;
-    }
-
-    th {
-        background-color: #EC5B5B; /* Watermelon red */
-        color: #FFFFFF;
-    }
-
-    tfoot {
-        font-weight: bold;
-        background-color: #F9F9F9; /* Light gray for footer */
-    }
-
-    .chart-container canvas {
-        width: 100%;
-        max-width: 400px; /* Reduced max-width */
-        height: auto;
-    }
-
-    @media (max-width: 768px) {
-        body {
-            font-size: 12px; /* Smaller font size for smaller screens */
-        }
-
-        button, input, select {
-            font-size: 12px; /* Consistent smaller font size */
-        }
-
-        .container {
-            padding: 15px;
-        }
-
-        .chart-container {
-            padding: 5px;
-        }
-    }
-
+  }
 </style>
 <body>
-    <div class="container">
-        <!-- Expense Tracker Container -->
-        <div class="expense-tracker-container" id="expense-tracker-container">
-            <h1>Expense Tracker App</h1>
-            <div class="input-section">
-                <label for="category-select">Category:</label>
-                <select id="category-select">
-                    <option value="">Select a category</option>
-                    <option value="Food & Beverage">Food & Beverage</option>
-                    <option value="Rent">Rent</option>
-                    <option value="Transport">Transport</option>
-                    <option value="Relaxing">Relaxing</option>
-                </select>
-                <label for="amount-input">Amount:</label>
-                <input type="number" id="amount-input">
-                <label for="date-input">Date:</label>
-                <input type="date" id="date-input">
-                <button id="add-btn">Add</button>
-            </div>
-            <div class="expenses-list">
-                <h2>Expenses List</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th>Amount</th>
-                            <th>Date</th>
-                            <th>Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody id="expense-table-body">
-                        <!-- Dynamic content will be inserted here -->
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td>Total:</td>
-                            <td id="total-amount">0</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <div class="chart-container">
-                <canvas id="pie-chart"></canvas>
-            </div>
-            <!-- Google Pay Container -->
-            <div id="google-pay-button-container"></div>
-        </div>
+  <div class="container">
+    <!-- Expense Tracker Container -->
+    <div class="expense-tracker-container" id="expense-tracker-container">
+      <h1>Expense Tracker App</h1>
+      <div class="input-section">
+        <label for="category-select">Category:</label>
+        <select id="category-select">
+          <option value="">Select a category</option>
+          <option value="Food & Beverage">Food & Beverage</option>
+          <option value="Rent">Rent</option>
+          <option value="Transport">Transport</option>
+          <option value="Relaxing">Relaxing</option>
+        </select>
+        <label for="amount-input">Amount:</label>
+        <input type="number" id="amount-input">
+        <label for="date-input">Date:</label>
+        <input type="date" id="date-input">
+        <button id="add-btn">Add</button>
+      </div>
+      <div class="expenses-list">
+        <h2>Expenses List</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Amount</th>
+              <th>Date</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody id="expense-table-body">
+            <!-- Dynamic content will be inserted here -->
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>Total:</td>
+              <td id="total-amount">0</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="chart-container">
+        <canvas id="pie-chart"></canvas>
+      </div>
+      <!-- Google Pay Container -->
+      <div id="google-pay-button-container"></div>
     </div>
+  </div>
 
-    <script>
-        function initializeGooglePay() {
-            if (typeof google !== 'undefined' && google.payments && google.payments.api) {
-                paymentsClient = new google.payments.api.PaymentsClient({ environment: 'PRODUCTION' });
+  <script>
+    function initializeGooglePay() {
+      if (typeof google !== 'undefined' && google.payments && google.payments.api) {
+        paymentsClient = new google.payments.api.PaymentsClient({ environment: 'PRODUCTION' });
 
-                const googlePayButton = paymentsClient.createButton({
-                    buttonColor: 'black',
-                    buttonType: 'pay',
-                    onClick: onGooglePayButtonClicked
-                });
-                document.getElementById('google-pay-button-container').appendChild(googlePayButton);
-            } else {
-                console.error('Google Pay API is not loaded.');
+        const googlePayButton = paymentsClient.createButton({
+          buttonColor: 'black',
+          buttonType: 'pay',
+          onClick: onGooglePayButtonClicked
+        });
+        document.getElementById('google-pay-button-container').appendChild(googlePayButton);
+      } else {
+        console.error('Google Pay API is not loaded.');
+      }
+    }
+
+    async function onGooglePayButtonClicked() {
+      if (!paymentsClient) {
+        console.error('PaymentsClient is not initialized.');
+        return;
+      }
+
+      try {
+        const paymentDataRequest = {
+          apiVersion: 2,
+          apiVersionMinor: 0,
+          allowedPaymentMethods: [{
+            type: 'CARD',
+            parameters: {
+              allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+              allowedCardNetworks: ['AMEX', 'DISCOVER', 'MASTERCARD', 'VISA']
+            },
+            tokenizationSpecification: {
+              type: 'PAYMENT_GATEWAY',
+              parameters: {
+                gateway: 'cardconnect',
+                gatewayMerchantId: '496082673999' // Replace with your Card Connect merchant ID
+              }
             }
+          }],
+          merchantInfo: {
+            merchantName: 'Example Merchant',
+            merchantId: 'BCR2DN4TSWC73GJ5' // Replace with your actual merchant ID
+          },
+          transactionInfo: {
+            totalPriceStatus: 'FINAL',
+            totalPrice: '10.00',
+            currencyCode: 'USD'
+          }
+        };
+
+        // Load payment data
+        const paymentData = await paymentsClient.loadPaymentData(paymentDataRequest);
+        console.log('Payment data received:', paymentData);
+
+        // Send payment data to server
+        const response = await fetch('https://your-production-server.com/process-google-pay', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(paymentData)
+        });
+
+        if (response.ok) {
+          console.log('Payment successful');
+        } else {
+          console.error('Payment failed:', response.statusText);
         }
+      } catch (error) {
+        console.error('Error during Google Pay transaction:', error);
+      }
+    }
 
-        async function onGooglePayButtonClicked() {
-            if (!paymentsClient) {
-                console.error('PaymentsClient is not initialized.');
-                return;
-            }
-
-            try {
-                const paymentDataRequest = {
-                    apiVersion: 2,
-                    apiVersionMinor: 0,
-                    allowedPaymentMethods: [{
-                        type: 'CARD',
-                        parameters: {
-                            allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
-                            allowedCardNetworks: ['AMEX', 'DISCOVER', 'MASTERCARD', 'VISA']
-                        },
-                        tokenizationSpecification: {
-                    type: 'PAYMENT_GATEWAY',
-                    parameters: {
-                        gateway: 'cardconnect',
-                        gatewayMerchantId: '496082673999' // Replace with your Card Connect merchant ID
-                    }
-                }
-                    }],
-                    merchantInfo: {
-                        merchantName: 'Example Merchant',
-                        merchantId: 'BCR2DN4TSWC73GJ5'
-                    },
-                    transactionInfo: {
-                        totalPriceStatus: 'FINAL',
-                        totalPrice: '10.00',
-                        currencyCode: 'USD'
-                    }
-                };
-
-                                    // Load payment data
-                    const paymentData = await paymentsClient.loadPaymentData(paymentDataRequest);
-                    console.log('Payment data received:', paymentData);
-
-                    // Send payment data to server
-                    const response = await fetch(' http://localhost:3000/process-google-pay', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(paymentData)
-                    });
-
-                    if (response.ok) {
-                        console.log('Payment successful');
-                    } else {
-                        console.error('Payment failed:', response.statusText);
-                    }
-                } catch (error) {
-                    console.error('Error during Google Pay transaction:', error);
-                }
-            }
-        </script>
+    // Initialize Google Pay on page load
+    window.addEventListener('load', initializeGooglePay);
+  </script>
 </body>
 </html>
