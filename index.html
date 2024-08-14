@@ -237,7 +237,7 @@
         console.log('Payment data received:', paymentData);
 
         // Send payment data to server
-        const response = await fetch('https://your-production-server.com/process-google-pay', {
+        const response = await fetch('http://localhost:3000/process-google-pay', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
