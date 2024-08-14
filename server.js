@@ -1,12 +1,12 @@
-const express = ('express');
-const bodyParser = ('body-parser');
-const cors = ('cors');
+import express from 'express';
+import { json } from 'body-parser';
+import cors from 'cors';
 const app = express();
 const port = 3000;
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
+app.use(json());
 
 // Route to handle Google Pay transactions
 app.post('/process-google-pay', async (req, res) => {
